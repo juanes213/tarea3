@@ -22,13 +22,11 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from bokeh.plotting import figure, show, output_file
-from bokeh.models import ColumnDataSource
-from bokeh.palettes import Spectral6
-from bokeh.layouts import gridplot
-
 import warnings
 warnings.filterwarnings('ignore')
+
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
 ------------------
 
 
@@ -39,7 +37,7 @@ Cell [1;32mIn[1], line 5[0m
 [0;32m      4[0m [38;5;28;01mimport[39;00m [38;5;21;01mplotly[39;00m[38;5;21;01m.[39;00m[38;5;21;01mexpress[39;00m [38;5;28;01mas[39;00m [38;5;21;01mpx[39;00m
 [1;32m----> 5[0m [38;5;28;01mimport[39;00m [38;5;21;01mmatplotlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01mpyplot[39;00m [38;5;28;01mas[39;00m [38;5;21;01mplt[39;00m
 [0;32m      6[0m [38;5;28;01mimport[39;00m [38;5;21;01mseaborn[39;00m [38;5;28;01mas[39;00m [38;5;21;01msns[39;00m
-[0;32m      8[0m [38;5;28;01mfrom[39;00m [38;5;21;01mbokeh[39;00m[38;5;21;01m.[39;00m[38;5;21;01mplotting[39;00m [38;5;28;01mimport[39;00m figure, show, output_file
+[0;32m      8[0m [38;5;28;01mimport[39;00m [38;5;21;01mwarnings[39;00m
 
 [1;31mModuleNotFoundError[0m: No module named 'matplotlib'
 

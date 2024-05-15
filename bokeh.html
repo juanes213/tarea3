@@ -58,6 +58,7 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'bokeh';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Visualización de datos a través de capas: Altair" href="altair.html" />
@@ -388,13 +389,11 @@ document.write(`
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
 
-<span class="kn">from</span> <span class="nn">bokeh.plotting</span> <span class="kn">import</span> <span class="n">figure</span><span class="p">,</span> <span class="n">show</span><span class="p">,</span> <span class="n">output_file</span>
-<span class="kn">from</span> <span class="nn">bokeh.models</span> <span class="kn">import</span> <span class="n">ColumnDataSource</span>
-<span class="kn">from</span> <span class="nn">bokeh.palettes</span> <span class="kn">import</span> <span class="n">Spectral6</span>
-<span class="kn">from</span> <span class="nn">bokeh.layouts</span> <span class="kn">import</span> <span class="n">gridplot</span>
-
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">ssl</span>
+<span class="n">ssl</span><span class="o">.</span><span class="n">_create_default_https_context</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">_create_unverified_context</span>
 </pre></div>
 </div>
 </div>
@@ -406,7 +405,7 @@ document.write(`
 <span class="g g-Whitespace">      </span><span class="mi">4</span> <span class="kn">import</span> <span class="nn">plotly.express</span> <span class="k">as</span> <span class="nn">px</span>
 <span class="ne">----&gt; </span><span class="mi">5</span> <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
-<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="kn">from</span> <span class="nn">bokeh.plotting</span> <span class="kn">import</span> <span class="n">figure</span><span class="p">,</span> <span class="n">show</span><span class="p">,</span> <span class="n">output_file</span>
+<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="ne">ModuleNotFoundError</span>: No module named &#39;matplotlib&#39;
 </pre></div>
@@ -1019,68 +1018,87 @@ memory usage: 384.5+ KB
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">year</span><span class="p">),</span><span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
-<span class="n">ymin</span><span class="p">,</span><span class="n">ymax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">co2</span><span class="p">),</span><span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">co2</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">inicio_x</span><span class="p">,</span> <span class="n">fin_x</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">datos</span><span class="o">.</span><span class="n">year</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">datos</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>
+<span class="n">inicio_y</span><span class="p">,</span> <span class="n">fin_y</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">datos</span><span class="o">.</span><span class="n">co2</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">datos</span><span class="o">.</span><span class="n">co2</span><span class="p">)</span>
+<span class="n">grafica</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">datos</span><span class="p">,</span> 
+                     <span class="n">x</span><span class="o">=</span><span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;co2&quot;</span><span class="p">,</span> 
+                     <span class="n">animation_group</span><span class="o">=</span><span class="s2">&quot;country&quot;</span><span class="p">,</span> 
+                     <span class="n">color</span><span class="o">=</span><span class="s2">&quot;region&quot;</span><span class="p">,</span> 
+                     <span class="n">hover_name</span><span class="o">=</span><span class="s2">&quot;country&quot;</span><span class="p">,</span>
+                     <span class="n">marginal_y</span><span class="o">=</span><span class="s2">&quot;box&quot;</span><span class="p">,</span>
+                     <span class="n">range_x</span><span class="o">=</span><span class="p">[</span><span class="n">inicio_x</span><span class="p">,</span> <span class="n">fin_x</span><span class="p">],</span>
+                     <span class="n">range_y</span><span class="o">=</span><span class="p">[</span><span class="n">inicio_y</span><span class="p">,</span> <span class="n">fin_y</span><span class="p">])</span>
 
-<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> 
-                 <span class="n">x</span><span class="o">=</span><span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;co2&quot;</span><span class="p">,</span> 
-                 <span class="n">animation_group</span><span class="o">=</span><span class="s2">&quot;country&quot;</span><span class="p">,</span> 
-                 <span class="n">color</span><span class="o">=</span><span class="s2">&quot;region&quot;</span><span class="p">,</span> 
-                 <span class="n">hover_name</span><span class="o">=</span><span class="s2">&quot;country&quot;</span><span class="p">,</span>
-                 <span class="n">marginal_y</span><span class="o">=</span><span class="s2">&quot;box&quot;</span><span class="p">,</span>
-                 <span class="n">range_x</span><span class="o">=</span><span class="p">[</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">],</span>
-                 <span class="n">range_y</span><span class="o">=</span><span class="p">[</span><span class="n">ymin</span><span class="p">,</span><span class="n">ymax</span><span class="p">])</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">grafica</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 </div>
 </div>
+<p>La gráfica exhibe las emisiones individuales de CO2 en diferentes regiones del mundo entre 1970 y aproximadamente 2010.</p>
+<p>América, Europa y Asia Central sobresalen por tener las emisiones más elevadas por persona durante la mayor parte del periodo, superando ocasionalmente las 40 toneladas métricas por individuo. Esto podría atribuirse a un mayor nivel de industrialización y una mayor dependencia de combustibles fósiles en estas zonas.</p>
+<p>En el caso de Asia Oriental y el Pacífico, se observa un incremento significativo en las emisiones per cápita a partir del año 2000, posiblemente vinculado al rápido desarrollo económico e industrial de países como China.</p>
+<p>Por otro lado, Asia del Sur y África Subsahariana muestran las emisiones más bajas por persona, sugiriendo una menor industrialización o una infraestructura energética menos dependiente de los combustibles fósiles. Sin embargo, se destaca un aumento en Asia del Sur después del 2000.</p>
+<p>Finalmente, Oriente Medio y Norte de África presentan una notable variabilidad, con años que registran emisiones muy altas por persona, posiblemente asociadas a la producción de petróleo y gas en estos lugares.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">gdp</span><span class="p">),</span><span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">gdp</span><span class="p">)</span>
-<span class="n">ymin</span><span class="p">,</span><span class="n">ymax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">co2</span><span class="p">),</span><span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">co2</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.express</span> <span class="k">as</span> <span class="nn">px</span>
 
-<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> 
-                 <span class="n">x</span><span class="o">=</span><span class="s2">&quot;gdp&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;co2&quot;</span><span class="p">,</span> 
-                 <span class="n">animation_group</span><span class="o">=</span><span class="s2">&quot;country&quot;</span><span class="p">,</span> 
-                 <span class="n">color</span><span class="o">=</span><span class="s2">&quot;region&quot;</span><span class="p">,</span> 
-                 <span class="n">hover_name</span><span class="o">=</span><span class="s2">&quot;country&quot;</span><span class="p">,</span>
-                 <span class="n">animation_frame</span><span class="o">=</span><span class="s2">&quot;year&quot;</span><span class="p">,</span>
-                 <span class="n">marginal_y</span><span class="o">=</span><span class="s2">&quot;box&quot;</span><span class="p">,</span>
-                 <span class="n">marginal_x</span><span class="o">=</span><span class="s2">&quot;box&quot;</span><span class="p">,</span>
-                 <span class="n">range_x</span><span class="o">=</span><span class="p">[</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">],</span>
-                 <span class="n">range_y</span><span class="o">=</span><span class="p">[</span><span class="n">ymin</span><span class="p">,</span><span class="n">ymax</span><span class="p">])</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c1"># Supongamos que `datos` es tu DataFrame con los datos</span>
+<span class="n">limite_min_gdp</span><span class="p">,</span> <span class="n">limite_max_gdp</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">datos</span><span class="o">.</span><span class="n">gdp</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">datos</span><span class="o">.</span><span class="n">gdp</span><span class="p">)</span>
+<span class="n">limite_min_co2</span><span class="p">,</span> <span class="n">limite_max_co2</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">datos</span><span class="o">.</span><span class="n">co2</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">datos</span><span class="o">.</span><span class="n">co2</span><span class="p">)</span>
+
+<span class="n">grafico</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">datos</span><span class="p">,</span> 
+                     <span class="n">x</span><span class="o">=</span><span class="s2">&quot;gdp&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;co2&quot;</span><span class="p">,</span> 
+                     <span class="n">animation_group</span><span class="o">=</span><span class="s2">&quot;country&quot;</span><span class="p">,</span> 
+                     <span class="n">color</span><span class="o">=</span><span class="s2">&quot;region&quot;</span><span class="p">,</span> 
+                     <span class="n">hover_name</span><span class="o">=</span><span class="s2">&quot;country&quot;</span><span class="p">,</span>
+                     <span class="n">animation_frame</span><span class="o">=</span><span class="s2">&quot;year&quot;</span><span class="p">,</span>
+                     <span class="n">marginal_y</span><span class="o">=</span><span class="s2">&quot;box&quot;</span><span class="p">,</span>
+                     <span class="n">marginal_x</span><span class="o">=</span><span class="s2">&quot;box&quot;</span><span class="p">,</span>
+                     <span class="n">range_x</span><span class="o">=</span><span class="p">[</span><span class="n">limite_min_gdp</span><span class="p">,</span> <span class="n">limite_max_gdp</span><span class="p">],</span>
+                     <span class="n">range_y</span><span class="o">=</span><span class="p">[</span><span class="n">limite_min_co2</span><span class="p">,</span> <span class="n">limite_max_co2</span><span class="p">])</span>
+
+<span class="c1"># Guardar el gráfico como un archivo HTML</span>
+<span class="n">grafico</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 </div>
 </div>
+<p>La gráfica ilustra la relación entre las emisiones de CO2 per cápita y el PIB por persona en diversas regiones a lo largo del tiempo.</p>
+<p>Más riqueza, más emisiones: Se observa una tendencia general en la que las regiones con un PIB per cápita más elevado suelen presentar también mayores emisiones de CO2 por individuo. Esto puede atribuirse al mayor consumo de energía asociado a niveles de vida más altos y economías más industrializadas.</p>
+<p>Disparidad en desarrollo y emisiones: Por otro lado, regiones con un PIB per cápita más bajo, como África Subsahariana y Asia del Sur, muestran habitualmente emisiones más reducidas por persona, lo que podría indicar una menor industrialización y, por ende, un menor uso de combustibles fósiles.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">gdp</span><span class="p">),</span><span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">gdp</span><span class="p">)</span>
-<span class="n">ymin</span><span class="p">,</span><span class="n">ymax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">co2</span><span class="p">),</span><span class="nb">max</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">co2</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">limite_min_gdp</span><span class="p">,</span> <span class="n">limite_max_gdp</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">datos</span><span class="o">.</span><span class="n">gdp</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">datos</span><span class="o">.</span><span class="n">gdp</span><span class="p">)</span>
+<span class="n">limite_min_co2</span><span class="p">,</span> <span class="n">limite_max_co2</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">datos</span><span class="o">.</span><span class="n">co2</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">datos</span><span class="o">.</span><span class="n">co2</span><span class="p">)</span>
 
-<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">density_contour</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> 
-                 <span class="n">x</span><span class="o">=</span><span class="s2">&quot;gdp&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;co2&quot;</span><span class="p">,</span> 
-                 <span class="n">animation_group</span><span class="o">=</span><span class="s2">&quot;country&quot;</span><span class="p">,</span> 
-                 <span class="n">color</span><span class="o">=</span><span class="s2">&quot;region&quot;</span><span class="p">,</span> 
-                 <span class="n">hover_name</span><span class="o">=</span><span class="s2">&quot;country&quot;</span><span class="p">,</span>
-                 <span class="n">animation_frame</span><span class="o">=</span><span class="s2">&quot;year&quot;</span><span class="p">,</span>
-                 <span class="n">marginal_y</span><span class="o">=</span><span class="s2">&quot;box&quot;</span><span class="p">,</span>
-                 <span class="n">marginal_x</span><span class="o">=</span><span class="s2">&quot;box&quot;</span><span class="p">,</span>
-                 <span class="n">range_x</span><span class="o">=</span><span class="p">[</span><span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span><span class="p">],</span>
-                 <span class="n">range_y</span><span class="o">=</span><span class="p">[</span><span class="n">ymin</span><span class="p">,</span><span class="n">ymax</span><span class="p">])</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">grafico_contorno_densidad</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">density_contour</span><span class="p">(</span><span class="n">datos</span><span class="p">,</span> 
+                                               <span class="n">x</span><span class="o">=</span><span class="s2">&quot;gdp&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;co2&quot;</span><span class="p">,</span> 
+                                               <span class="n">animation_group</span><span class="o">=</span><span class="s2">&quot;country&quot;</span><span class="p">,</span> 
+                                               <span class="n">color</span><span class="o">=</span><span class="s2">&quot;region&quot;</span><span class="p">,</span> 
+                                               <span class="n">hover_name</span><span class="o">=</span><span class="s2">&quot;country&quot;</span><span class="p">,</span>
+                                               <span class="n">animation_frame</span><span class="o">=</span><span class="s2">&quot;year&quot;</span><span class="p">,</span>
+                                               <span class="n">marginal_y</span><span class="o">=</span><span class="s2">&quot;box&quot;</span><span class="p">,</span>
+                                               <span class="n">marginal_x</span><span class="o">=</span><span class="s2">&quot;box&quot;</span><span class="p">,</span>
+                                               <span class="n">range_x</span><span class="o">=</span><span class="p">[</span><span class="n">limite_min_gdp</span><span class="p">,</span> <span class="n">limite_max_gdp</span><span class="p">],</span>
+                                               <span class="n">range_y</span><span class="o">=</span><span class="p">[</span><span class="n">limite_min_co2</span><span class="p">,</span> <span class="n">limite_max_co2</span><span class="p">])</span>
+
+<span class="n">grafico_contorno_densidad</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 </div>
 </div>
+<ul class="simple">
+<li><p>Observaciones de baja concentración en PIB elevado: Se observa que la mayoría de las curvas de densidad se agrupan hacia el extremo inferior del rango de PIB, lo que sugiere que la mayoría de las observaciones en estas regiones tienen un PIB relativamente bajo.</p></li>
+<li><p>Dispersión y niveles de emisión: Por otro lado, las curvas de densidad que se extienden hacia valores más altos de PIB (como en América y Europa &amp; Asia Central) indican una mayor variabilidad tanto en el PIB como en las emisiones.</p></li>
+<li><p>Alturas de los picos y amplitud: La altura de los picos puede sugerir dónde se concentran más comúnmente las observaciones de PIB y emisiones, mientras que la amplitud de las curvas indica la variabilidad del PIB dentro de cada región.</p></li>
+</ul>
 </section>
 
     <script type="text/x-thebe-config">
@@ -1149,7 +1167,7 @@ memory usage: 384.5+ KB
   <div class="footer-item">
     
 <p class="component-author">
-By Juan Albis, Celien, Jesus Arevalo
+By Juan Albis, Celien, y Jesus Arevalo
 </p>
 
   </div>
